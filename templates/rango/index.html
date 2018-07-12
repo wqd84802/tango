@@ -8,10 +8,21 @@
 <body>
 <h1>Hello Rango</h1>
     <div>
-        <strong>{{ message }}</strong>
+        {% if categories %}
+            <ul>
+            {% for category in categories %}
+
+                <li><a href="{% url 'rango:category' category.slug %}">{{ category.name }}</a> </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <h1>There is no category</h1>
+        {% endif %}
+        <strong></strong>
     </div>
     <div>
         <a href="{% url 'rango:about' %}">About</a>
+        <a href="{% url 'rango:add_category' %}">Add a new Category</a>
     </div>
     <div><img src="{% static 'img/rango.jpg' %}" alt="Picture is rango" >Hello</div>
 </body>

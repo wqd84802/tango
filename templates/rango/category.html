@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Category</title>
+</head>
+<body>
+<div>
+    {% if category %}
+    <h1>The category name is {{ category.name }}</h1>
+            {% if pages %}
+                <ul>
+                {% for page in pages %}
+                    <li>
+                    <a href="{{ page.url }}">{{ page.title }}</a>
+                    </li>
+                {% endfor %}
+                </ul>
+            {% else %}
+           <h1>The current pages is not exist</h1>
+           {% endif %}
+
+    {% else %}
+    <h1>The specify category is not exist</h1>
+    {% endif %}
+</div>
+
+</body>
+{# <body>#}
+{#        {% if category %}#}
+{#        <h1>{{ category.name}}</h1>#}
+{#            {% if pages %}#}
+{#            <ul>#}
+{#                {% for page in pages %}#}
+{#                <li><a href="{{ page.url }}">{{ page.title }}</a></li>#}
+{#                {% endfor %}#}
+{#            </ul>#}
+{#            {% else %}#}
+{#                <strong>No pages currently in category.</strong>#}
+{#            {% endif %}#}
+{#        {% else %}#}
+{#            The specified category {{ category_name }} does not exist!#}
+{#        {% endif %}#}
+{#    </body>#}
+</html>
