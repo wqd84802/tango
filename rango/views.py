@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rango.models import Category, Page
-from rango.forms import CategoryForm, PageForm
+from rango.forms import CategoryForm, PageForm, UserForm, UserProfileForm
 # Create your views here.
 
 def index(request):
@@ -11,7 +11,7 @@ def index(request):
 def about(request):
     return render(request, 'rango/about.html', {})
 
-def category(request, category_name_slug):
+def show_category(request, category_name_slug):
     try:
         category = Category.objects.get(slug=category_name_slug)
         pages = Page.objects.filter(category=category)
@@ -47,12 +47,31 @@ def add_page(request, category_name_slug):
                 page.category = category
                 page.views = 0
                 page.save()
-                return category(request, category_name_slug)
+                return show_category(request, category_name_slug)
         else:
             print(form.errors)
 
     return render(request, 'rango/add_page.html', {"form": form, "category": category})
 
 
+def register(request):
 
+    registed = False
+
+    if request.method == 'POST':
+        user_form = UserForm(request.POST)
+        profile_form = UserProfileForm(request.POST)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user = user_form.save()
+            user.set_password(user.password)
+            user.save()
+
+            profile = profile_form.save(commit=False)
+            profile.user = user
+
+            if 'picture' in request.FILES['picture']:
+                profile.save()
+
+                registed = True
 

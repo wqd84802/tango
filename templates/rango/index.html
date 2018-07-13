@@ -1,12 +1,11 @@
+{% extends "rango/base.html" %}
+{% load staticfiles %}
 
-{% load staticfiles %}<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<h1>Hello Rango</h1>
+{% block title_block %}
+    <h1>Hello Index</h1>
+{% endblock %}
+
+{% block body_block %}
     <div>
         {% if categories %}
             <ul>
@@ -18,12 +17,22 @@
         {% else %}
             <h1>There is no category</h1>
         {% endif %}
-        <strong></strong>
-    </div>
-    <div>
-        <a href="{% url 'rango:about' %}">About</a>
-        <a href="{% url 'rango:add_category' %}">Add a new Category</a>
+
     </div>
     <div><img src="{% static 'img/rango.jpg' %}" alt="Picture is rango" >Hello</div>
+{% endblock %}
+
+
+
+
+{% load staticfiles %}<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Hello Rango</h1>
+
 </body>
 </html>
