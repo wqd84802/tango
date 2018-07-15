@@ -7,6 +7,11 @@
 
 {% block body_block %}
     <div>
+    {% if user.is_authenticated %}
+The login user is {{ user.username }}
+{% else %}
+Hey is patener
+{% endif %}
         {% if categories %}
             <ul>
             {% for category in categories %}

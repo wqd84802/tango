@@ -1,6 +1,9 @@
 from django.shortcuts import render
 from rango.models import Category, Page
 from rango.forms import CategoryForm, PageForm, UserForm, UserProfileForm
+from django.contrib.auth import authenticate, login
+from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse
 # Create your views here.
 
 def index(request):
@@ -74,4 +77,39 @@ def register(request):
                 profile.save()
 
                 registed = True
+
+        else:
+            print(user_form.errors, profile_form.errors)
+    else:
+        user_form = UserForm()
+        profile_form = UserProfileForm()
+
+    return render(request, 'rango/register.html',{
+        'user_form': user_form,
+        'profile_form': profile_form,
+        'registed': registed
+    } )
+
+
+def user_login(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(username=username, password=password)
+
+        if user:
+            if user.is_active:
+                login(request, user)
+                return HttpResponseRedirect(reverse('rango:index'))
+            else:
+                return HttpResponse("The user is invalid")
+        else:
+
+            print("the accont is avalid--{}--{}--".format(username, password))
+            return HttpResponse('avalid account')
+
+    else:
+        return render(request, 'rango/login.html', {})
+
 
