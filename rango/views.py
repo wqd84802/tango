@@ -1,17 +1,31 @@
 from django.shortcuts import render
 from rango.models import Category, Page
 from rango.forms import CategoryForm, PageForm, UserForm, UserProfileForm
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
+from datetime import datetime
+
+from registration.backends.simple.views import RegistrationView
 # Create your views here.
 
 def index(request):
 
-   category_list = Category.objects.order_by("-likes")[:5]
-   return render(request, 'rango/index.html', {'categories' : category_list})
+    category_list = Category.objects.all()
+    page_list = Page.objects.order_by('-views')[:5]
+    context_dict = {'categories': category_list, 'pages': page_list}
+
+    # Get the number of visits to the site.
+    # We use the COOKIES.get() function to obtain the visits cookie.
+    # If the cookie exists, the value returned is casted to an integer.
+    # If the cookie doesn't exist, we default to zero and cast that.
+    return render(request, 'rango/index.html', context_dict)
 
 def about(request):
+    if request.session.test_cookie_worked():
+        print("TEST COOKIE WORKED!")
+        request.session.delete_test_cookie()
     return render(request, 'rango/about.html', {})
 
 def show_category(request, category_name_slug):
@@ -19,8 +33,9 @@ def show_category(request, category_name_slug):
         category = Category.objects.get(slug=category_name_slug)
         pages = Page.objects.filter(category=category)
     except Category.DoesNotExist:
-        category = None
-        pages = None
+        # category = None
+        # pages = None
+        pass
     return render(request, 'rango/category.html', {"category": category, "pages": pages})
 
 def add_category(request):
@@ -113,3 +128,16 @@ def user_login(request):
         return render(request, 'rango/login.html', {})
 
 
+@login_required
+def restricted(request):
+    return HttpResponse("Since you're logined , you can see the page")
+
+@login_required
+def user_logout(request):
+    logout(request)
+    return HttpResponseRedirect(reverse('rango:index'))
+
+
+class MyRegistrationView(RegistrationView):
+    def get_success_url(self, request,user):
+        return '/'
